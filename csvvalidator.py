@@ -971,7 +971,7 @@ def search_pattern(regex):
     return checker
 
 
-def number_range_inclusive(min, max, type=float):
+def number_range_inclusive(min, max, type=float,null_values=False):
     """
     Return a value check function which raises a ValueError if the supplied
     value when cast as `type` is less than `min` or greater than `max`.
@@ -979,22 +979,52 @@ def number_range_inclusive(min, max, type=float):
     """
 
     def checker(v):
-        if type(v) < min or type(v) > max:
-            raise ValueError(v)
+        
+        if null_values:
+
+            if len(v) == 0:
+                pass
+            
+            elif type(v) < min or type(v) > max:
+                raise ValueError(v)
+            
+            else:
+                pass
+
+        else:
+            if type(v) < min or type(v) > max:
+                raise ValueError(v)
+
     return checker
 
 
-def number_range_exclusive(min, max, type=float):
+def number_range_exclusive(min, max, type=float,null_values=False):
     """
     Return a value check function which raises a ValueError if the supplied
     value when cast as `type` is less than or equal to `min` or greater than
     or equal to `max`.
 
+    JB FORK - Added the ability to ignore null values.
+
     """
 
     def checker(v):
-        if type(v) <= min or type(v) >= max:
-            raise ValueError(v)
+        
+        if null_values:
+
+            if len(v) == 0:
+                pass
+            
+            elif type(v) <= min or type(v) >= max:
+                raise ValueError(v)
+            
+            else:
+                pass
+
+        else:
+            if type(v) <= min or type(v) >= max:
+                raise ValueError(v)
+
     return checker
 
 
@@ -1045,6 +1075,16 @@ def datetime_range_exclusive(min, max, format):
             raise ValueError(v)
     return checker
 
+def max_length(max_length):
+    """
+    JB FORK - Return a value length check function which raises a ValueError
+    if the supplied value is greater than the provided max column length.
+    """
+
+    def checker(v):
+        if len(v) > max_length:
+            raise ValueError(v)
+    return checker
 
 def write_problems(problems, file, summarize=False, limit=0):
     """
